@@ -21,6 +21,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/kakao-callback",
     component: () => import("@/views/KakaoCallback.vue"),
   },
+  {
+    path: "/google-callback",
+    component: () => import("@/views/GoogleCallback.vue"),
+  },
+  {
+    path: "/apple-callback",
+    component: () => import("@/views/AppleCallback.vue"),
+  },
 ];
 
 export default createRouter({

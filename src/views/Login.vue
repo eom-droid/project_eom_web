@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import CustomInput from "@/components/CustomInput.vue";
 import CustomDialog from "@/components/CustomDialog.vue";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 // import { loginWithKakao } from "@/utils/kakao";
 
 const email = ref("");
@@ -67,13 +67,28 @@ async function emailLogin({
       }
     );
 
-    console.log(result);
+    const accessToken = result.data.accessToken;
+    const refreshToken = result.data.refreshToken;
+    // 앱으로 토큰 전달
+    //@ts-ignore
+    toApp.postMessage(
+      JSON.stringify({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      })
+    );
   } catch (e) {
-    console.log(e);
+    if (e instanceof AxiosError) {
+      showDialog.value = true;
+      dialogContent.value = "이메일 또는 비밀번호가 올바르지 않습니다";
+    } else {
+      showDialog.value = true;
+      dialogContent.value = "알 수 없는 오류가 발생했습니다";
+    }
   }
 }
 
-async function onClickKakaoLogin() {
+function onClickKakaoLogin() {
   window.location.href =
     import.meta.env.VITE_KAKAO_URL +
     "oauth/authorize?client_id=" +
@@ -81,6 +96,16 @@ async function onClickKakaoLogin() {
     "&redirect_uri=" +
     import.meta.env.VITE_KAKAO_REDIRECT_URI +
     "&response_type=code";
+}
+
+function onClickGoogleLogin() {
+  window.location.href =
+    "https://accounts.google.com/o/oauth2/v2/auth" +
+    "?client_id=" +
+    import.meta.env.VITE_GOOGLE_CLIENT_ID +
+    "&redirect_uri=" +
+    import.meta.env.VITE_GOOGLE_REDIRECT_URI +
+    "&response_type=code&scope=email%20profile";
 }
 </script>
 
@@ -117,7 +142,10 @@ async function onClickKakaoLogin() {
             @click="onClickKakaoLogin"
           />
           <!-- <img src="@/assets/imgs/logo/naver_logo.png" /> -->
-          <img src="@/assets/imgs/logo/google_logo.png" />
+          <img
+            src="@/assets/imgs/logo/google_logo.png"
+            @click="onClickGoogleLogin"
+          />
           <img src="@/assets/imgs/logo/apple_logo.png" />
         </div>
       </div>
