@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,9 +17,13 @@ const routes: Array<RouteRecordRaw> = [
     path: "/password-reset",
     component: () => import("@/views/PasswordReset.vue"),
   },
+  {
+    path: "/kakao-callback",
+    component: () => import("@/views/KakaoCallback.vue"),
+  },
 ];
 
 export default createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
 });

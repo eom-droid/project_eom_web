@@ -3,6 +3,7 @@ import { ref } from "vue";
 import CustomInput from "@/components/CustomInput.vue";
 import CustomDialog from "@/components/CustomDialog.vue";
 import axios from "axios";
+// import { loginWithKakao } from "@/utils/kakao";
 
 const email = ref("");
 const password = ref("");
@@ -56,8 +57,7 @@ async function emailLogin({
 }) {
   try {
     const result = await axios.post(
-      "http://localhost:3001/api/v1/auth/login/email",
-
+      import.meta.env.VITE_BACKEND_URL + "api/v1/auth/login/email",
       {
         email: email,
         password: password,
@@ -66,10 +66,21 @@ async function emailLogin({
         withCredentials: true,
       }
     );
-    console.log(result.headers.toJSON());
+
+    console.log(result);
   } catch (e) {
     console.log(e);
   }
+}
+
+async function onClickKakaoLogin() {
+  window.location.href =
+    import.meta.env.VITE_KAKAO_URL +
+    "oauth/authorize?client_id=" +
+    import.meta.env.VITE_KAKAO_JS_KEY +
+    "&redirect_uri=" +
+    import.meta.env.VITE_KAKAO_REDIRECT_URI +
+    "&response_type=code";
 }
 </script>
 
@@ -88,7 +99,6 @@ async function emailLogin({
         <span v-if="isLoading">로그인 중...</span>
         <span v-else>로그인</span>
       </button>
-      {{ showDialog }}
       <custom-dialog
         :show-dialog="showDialog"
         :dialog-content="dialogContent"
@@ -102,7 +112,10 @@ async function emailLogin({
       <div class="sns-login-wrapper">
         <p>소셜 로그인(추천)</p>
         <div class="sns-login-btn-wrapper">
-          <img src="@/assets/imgs/logo/kakao_logo.png" />
+          <img
+            src="@/assets/imgs/logo/kakao_logo.png"
+            @click="onClickKakaoLogin"
+          />
           <!-- <img src="@/assets/imgs/logo/naver_logo.png" /> -->
           <img src="@/assets/imgs/logo/google_logo.png" />
           <img src="@/assets/imgs/logo/apple_logo.png" />
@@ -182,7 +195,7 @@ async function emailLogin({
 }
 
 .sns-login-btn-wrapper img {
-  width: 40px;
+  width: 50px;
   cursor: pointer;
 }
 </style>
