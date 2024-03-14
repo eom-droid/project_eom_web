@@ -1,13 +1,17 @@
 <template>
   <div class="wrapper">
     <span class="loader"></span>
+
+    <p style="color: white">{{ shit }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import axios from "axios";
-import { onMounted } from "vue";
-import router from "@/router";
+import axios, { AxiosError } from "axios";
+import { onMounted, ref } from "vue";
+// import router from "@/router";
+
+const shit = ref("");
 
 onMounted(() => {
   loginProcess();
@@ -16,6 +20,7 @@ onMounted(() => {
 async function loginProcess() {
   try {
     const code = window.location.href.split("code=")[1];
+
     const result = await axios.post(
       import.meta.env.VITE_BACKEND_URL + "api/v1/auth/join/web/kakao",
       {
@@ -38,7 +43,13 @@ async function loginProcess() {
     );
     return;
   } catch (e) {
-    router.replace("/");
+    //@ts-ignore
+    Print.postMessage("catch");
+    if (e instanceof AxiosError) {
+      //@ts-ignore
+      Print.postMessage(JSON.stringify(e.toJSON()));
+    }
+    // router.replace("/");
   }
 }
 </script>

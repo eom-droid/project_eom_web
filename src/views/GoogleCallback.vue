@@ -8,6 +8,7 @@
 import { onMounted } from "vue";
 // import router from "@/router";
 import axios from "axios";
+import router from "@/router";
 
 onMounted(() => {
   loginProcess();
@@ -40,7 +41,7 @@ async function loginProcess() {
     );
     return;
   } catch (e) {
-    // router.replace("/");
+    router.replace("/");
   }
 }
 </script>

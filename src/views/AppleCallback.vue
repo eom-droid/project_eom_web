@@ -18,7 +18,7 @@ async function loginProcess() {
     const code = window.location.href.split("?code=")[1].split("&")[0];
 
     const result = await axios.post(
-      import.meta.env.VITE_BACKEND_URL + "api/v1/auth/join/web/google",
+      import.meta.env.VITE_BACKEND_URL + "api/v1/auth/join/web/apple",
       {
         code: code,
       },

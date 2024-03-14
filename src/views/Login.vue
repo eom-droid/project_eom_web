@@ -107,6 +107,14 @@ function onClickGoogleLogin() {
     import.meta.env.VITE_GOOGLE_REDIRECT_URI +
     "&response_type=code&scope=email%20profile";
 }
+
+function onClickAppleLogin() {
+  window.location.href =
+    "https://appleid.apple.com/auth/authorize?response_type=code&client_id=" +
+    import.meta.env.VITE_APPLE_CLIENT_ID +
+    "&redirect_uri=" +
+    import.meta.env.VITE_APPLE_REDIRECT_URI;
+}
 </script>
 
 <template>
@@ -146,7 +154,10 @@ function onClickGoogleLogin() {
             src="@/assets/imgs/logo/google_logo.png"
             @click="onClickGoogleLogin"
           />
-          <img src="@/assets/imgs/logo/apple_logo.png" />
+          <img
+            src="@/assets/imgs/logo/apple_logo.png"
+            @click="onClickAppleLogin"
+          />
         </div>
       </div>
     </div>

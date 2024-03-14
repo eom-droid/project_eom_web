@@ -29,6 +29,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/apple-callback",
     component: () => import("@/views/AppleCallback.vue"),
   },
+  {
+    path: "/terms-of-use",
+    component: () => import("@/views/TermsOfUse.vue"),
+  },
+  {
+    path: "/privacy-policy",
+    component: () => import("@/views/PrivacyPolicy.vue"),
+  },
 ];
 
 export default createRouter({
