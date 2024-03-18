@@ -6,42 +6,39 @@
 
 <script setup lang="ts">
 import { onMounted } from "vue";
-// import router from "@/router";
+
 import axios from "axios";
-import router from "@/router";
 
 onMounted(() => {
-  loginProcess();
+  if (window.location.href.includes("?code=")) {
+    revokeProcess();
+  } else {
+    window.location.href =
+      "https://appleid.apple.com/auth/authorize?response_type=code&client_id=" +
+      import.meta.env.VITE_APPLE_CLIENT_ID +
+      "&redirect_uri=" +
+      import.meta.env.VITE_APPLE_REVOKE_REDIRECT_URI;
+  }
 });
 
-async function loginProcess() {
+async function revokeProcess() {
   try {
     const code = window.location.href.split("?code=")[1].split("&")[0];
 
-    const result = await axios.post(
-      import.meta.env.VITE_BACKEND_URL + "api/v1/auth/join/web/apple",
-      {
-        code: code,
-      },
-      {
-        withCredentials: true,
-      }
+    await axios.delete(
+      import.meta.env.VITE_BACKEND_URL + "api/v1/user/me/apple",
+      { data: { code: code }, withCredentials: true }
     );
 
-    const accessToken = result.data.accessToken;
-    const refreshToken = result.data.refreshToken;
+    // const accessToken = result.data.accessToken;
+    // const refreshToken = result.data.refreshToken;
 
     // 앱으로 토큰 전달
     //@ts-ignore
-    toApp.postMessage(
-      JSON.stringify({
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      })
-    );
+    toApp.postMessage("complete");
     return;
   } catch (e) {
-    router.replace("/");
+    // router.replace("/");
   }
 }
 </script>

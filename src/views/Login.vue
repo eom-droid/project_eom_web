@@ -79,11 +79,9 @@ async function emailLogin({
     );
   } catch (e) {
     if (e instanceof AxiosError) {
-      showDialog.value = true;
-      dialogContent.value = "이메일 또는 비밀번호가 올바르지 않습니다";
+      openDialog("이메일 또는 비밀번호가 올바르지 않습니다");
     } else {
-      showDialog.value = true;
-      dialogContent.value = "알 수 없는 오류가 발생했습니다";
+      openDialog("알 수 없는 오류가 발생했습니다");
     }
   }
 }

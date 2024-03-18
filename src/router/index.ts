@@ -37,6 +37,15 @@ const routes: Array<RouteRecordRaw> = [
     path: "/privacy-policy",
     component: () => import("@/views/PrivacyPolicy.vue"),
   },
+  // 탈퇴 redirect uri
+  {
+    path: "/google-account-revoke",
+    component: () => import("@/views/GoogleAccountRevoke.vue"),
+  },
+  {
+    path: "/apple-account-revoke",
+    component: () => import("@/views/AppleAccountRevoke.vue"),
+  },
 ];
 
 export default createRouter({
