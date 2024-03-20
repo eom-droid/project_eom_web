@@ -1,11 +1,95 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import CustomInput from "@/components/CustomInput.vue";
+import CustomDialog from "@/components/CustomDialog.vue";
+import axios from "axios";
 
 const email = ref("");
 const verifyCode = ref("");
 const password = ref("");
 const passwordCheck = ref("");
+
+const isLoading = ref(false);
+const isVerificationCodeSent = ref(false);
+const isVerifiactionCodeSending = ref(false);
+
+const showDialog = ref(false);
+const dialogContent = ref("");
+
+function openDialog(content: string) {
+  dialogContent.value = content;
+  showDialog.value = true;
+  setTimeout(() => {
+    showDialog.value = false;
+  }, 2000);
+}
+
+async function onClickJoin() {
+  if (isLoading.value) return;
+  isLoading.value = true;
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 2000);
+
+  if (email.value === "") {
+    openDialog("이메일을 입력해주세요");
+    return;
+  }
+
+  if (verifyCode.value === "") {
+    openDialog("인증번호를 입력해주세요");
+    return;
+  }
+
+  if (password.value === "") {
+    openDialog("비밀번호를 입력해주세요");
+    return;
+  }
+
+  if (passwordCheck.value === "") {
+    openDialog("비밀번호 확인을 입력해주세요");
+    return;
+  }
+
+  if (password.value !== passwordCheck.value) {
+    openDialog("비밀번호가 일치하지 않습니다");
+    return;
+  }
+
+  try {
+    const result = await axios.post(
+      import.meta.env.VITE_BACKEND_URL + "api/v1/auth/join/email",
+      {
+        email: email.value,
+        password: password.value,
+        verificationCode: verifyCode.value,
+      }
+    );
+
+    const accessToken = result.data.accessToken;
+    const refreshToken = result.data.refreshToken;
+    //@ts-ignore
+    toApp.postMessage(JSON.stringify({ accessToken, refreshToken }));
+    isLoading.value = false;
+  } catch (e) {
+    openDialog("회원가입에 실패했습니다");
+    isLoading.value = false;
+  }
+}
+
+async function sendVerificationMes() {
+  if (isVerifiactionCodeSending.value) return;
+  isVerificationCodeSent.value = true;
+  isVerifiactionCodeSending.value = true;
+  await axios.post(
+    import.meta.env.VITE_BACKEND_URL +
+      "api/v1/auth/join/email/verificationCode/send",
+    {
+      email: email.value,
+    }
+  );
+  isVerifiactionCodeSending.value = false;
+}
 </script>
 
 <template>
@@ -18,7 +102,18 @@ const passwordCheck = ref("");
           v-model="email"
           placeholder="이메일"
         />
-        <button class="sub-btn sub-btn-width-height">인증번호 발송</button>
+        <button
+          class="sub-btn sub-btn-width-height"
+          @click="sendVerificationMes"
+        >
+          {{
+            isVerifiactionCodeSending
+              ? "전송중"
+              : isVerificationCodeSent
+                ? "재전송"
+                : "인증번호 발송"
+          }}
+        </button>
       </div>
 
       <CustomInput
@@ -44,7 +139,13 @@ const passwordCheck = ref("");
         class="margin-top-10"
       />
 
-      <button class="main-btn margin-top-40">회원가입</button>
+      <button class="main-btn margin-top-40" @click="onClickJoin">
+        회원가입
+      </button>
+      <CustomDialog
+        :showDialog="showDialog"
+        :dialogContent="dialogContent"
+      ></CustomDialog>
     </div>
   </div>
 </template>
