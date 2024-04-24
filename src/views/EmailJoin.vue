@@ -79,16 +79,23 @@ async function onClickJoin() {
 
 async function sendVerificationMes() {
   if (isVerifiactionCodeSending.value) return;
-  isVerificationCodeSent.value = true;
-  isVerifiactionCodeSending.value = true;
-  await axios.post(
-    import.meta.env.VITE_BACKEND_URL +
-      "api/v1/auth/join/email/verificationCode/send",
-    {
-      email: email.value,
-    }
-  );
-  isVerifiactionCodeSending.value = false;
+  try {
+    isVerificationCodeSent.value = true;
+    isVerifiactionCodeSending.value = true;
+
+    await axios.post(
+      import.meta.env.VITE_BACKEND_URL +
+        "api/v1/auth/join/email/verificationCode/send",
+      {
+        email: email.value,
+      }
+    );
+    isVerifiactionCodeSending.value = false;
+  } catch (e) {
+    openDialog("인증번호 에러");
+    //@ts-ignore
+    toApp.postMessage(JSON.stringify(e));
+  }
 }
 </script>
 
@@ -106,13 +113,15 @@ async function sendVerificationMes() {
           class="sub-btn sub-btn-width-height"
           @click="sendVerificationMes"
         >
-          {{
-            isVerifiactionCodeSending
-              ? "전송중"
-              : isVerificationCodeSent
-                ? "재전송"
-                : "인증번호 발송"
-          }}
+          <div v-show="isVerifiactionCodeSending">
+            <img
+              src="@/assets/imgs/gif/circle-loading.gif"
+              style="width: 20px; height: 20px"
+            />
+          </div>
+          <span v-show="!isVerifiactionCodeSending">
+            {{ isVerificationCodeSent ? "재전송" : "인증번호 발송" }}
+          </span>
         </button>
       </div>
 

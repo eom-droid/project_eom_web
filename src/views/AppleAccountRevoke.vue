@@ -30,9 +30,6 @@ async function revokeProcess() {
       { data: { code: code }, withCredentials: true }
     );
 
-    // const accessToken = result.data.accessToken;
-    // const refreshToken = result.data.refreshToken;
-
     // 앱으로 토큰 전달
     //@ts-ignore
     toApp.postMessage("complete");
