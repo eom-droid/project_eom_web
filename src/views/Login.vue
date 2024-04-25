@@ -176,6 +176,7 @@ function onClickAppleLogin() {
 
 .flex {
   width: 100%;
+  margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;

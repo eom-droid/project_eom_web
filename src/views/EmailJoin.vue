@@ -174,6 +174,8 @@ async function sendVerificationMes() {
 .flex {
   width: 100%;
   display: flex;
+  margin: auto;
+
   flex-direction: column;
   align-items: center;
 }
